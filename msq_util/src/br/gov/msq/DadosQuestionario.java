@@ -5,7 +5,6 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -13,12 +12,22 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
+/**
+ * @author marco.nascimento
+ */
 public class DadosQuestionario {
 
+	//Arquivo gerado pelo app
+	private static final String INPUT_FILE = "/home/tulio/AmbienteDesenvolvimento/ms/phonegap/msq_banco.txt";
+
+	//saida em formato excel
+	private static final String OUTPUT_XLS = "/home/tulio/AmbienteDesenvolvimento/ms/phonegap/poi-test.xls";
+	
+	
+	
 	public static void main(String[] args) throws Exception {
 		
-		
-		FileOutputStream fileOut = new FileOutputStream("/home/tulio/AmbienteDesenvolvimento/ms/phonegap/poi-test.xls");
+		FileOutputStream fileOut = new FileOutputStream(OUTPUT_XLS);
 		HSSFWorkbook workbook = new HSSFWorkbook();
 		HSSFSheet worksheet = workbook.createSheet("Dados - Questionario");
 		
@@ -34,21 +43,25 @@ public class DadosQuestionario {
 			DadosWrapper dado = new DadosWrapper();
 			dado.setNumeroLinha(++i);
 			
-			System.out.println("numero linha: " + i);
+			//System.out.println("numero linha: " + i);
 			
 			String[] pergunta = registro[i].split("##");
 			for (int j = 0; j < pergunta.length; j++) {
 				
 				String[] atributosDOM = pergunta[j].split(",");
+				
 				Map<String, String> map = new HashMap<String, String>();
 				for (String atributo : atributosDOM) {
 					if(atributo.split("=").length == 2) {
-						map.put(atributo.split("=")[0], atributo.split("=")[1]);
+						map.put(atributo.split("=")[0].trim(), atributo.split("=")[1]);
 					}
 				}
-				
 				String chave = map.get("id") != null && !map.get("id").equals("") ? map.get("id") : map.get("name");
 				String valor = map.get("value");
+				
+				if(chave == null) {
+					System.out.println("chave === ");
+				}
 				
 				if(chave != null && !chave.equals("") && valor != null && !valor.equals("")) {
 					if(mapQuestionario.get(chave) == null) {
@@ -67,17 +80,21 @@ public class DadosQuestionario {
 			}
 		}
 		
+		//System.out.println("size:" + mapQuestionario.keySet().size() + " -- " +mapQuestionario.keySet());
+		
 		HSSFRow header = criarLinha(worksheet, 0);
 		for (int i = 0; i < mapQuestionario.keySet().toArray().length; i++) {
-			header.createCell(i).setCellValue(mapQuestionario.keySet().toArray()[i].toString());
+			/**
+			 * procurar fix, esta suportando apenas 256 colunas, atualmente temos 359 e outras colunas vao surgir 
+			 */
+			if(i < 256)
+				header.createCell(i).setCellValue(mapQuestionario.keySet().toArray()[i].toString());
 		}
 		
 		for (DadosWrapper dado : wrapperList) {
 			HSSFRow linha = criarLinha(worksheet, dado.getNumeroLinha());
 			linha.createCell(dado.getNumeroColuna()).setCellValue(dado.getValor());
-			System.out.println("numero linha: " + dado.getNumeroLinha());
 		}
-	    
 	    
 		workbook.write(fileOut);
 		fileOut.flush();
@@ -85,11 +102,12 @@ public class DadosQuestionario {
 			
 	}
 	
-	
-	
 	private static String recuperarDados() throws Exception {
-		BufferedReader reader = new BufferedReader(new FileReader("/home/tulio/AmbienteDesenvolvimento/ms/phonegap/msq_banco.txt"));
-		String dados = reader.readLine(); //arquivo com apenas 1 linha
+		BufferedReader reader = new BufferedReader(new FileReader(INPUT_FILE));
+		
+		//arquivo com apenas 1 linha
+		String dados = reader.readLine();
+		
 		reader.close();
 		return dados;
 	}
@@ -98,5 +116,4 @@ public class DadosQuestionario {
 		HSSFRow linha = worksheet.createRow(numero);
 		return linha;
 	}
-
 }

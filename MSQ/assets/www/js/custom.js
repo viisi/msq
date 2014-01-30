@@ -43,17 +43,6 @@ function inicializar() {
 	});
 	
 	readText();
-	
-	//clickRadio();
-}
-
-function radioClick(obj) {
-	alert(obj.is('checked'));
-	alert(obj);
-}
-
-function radioClick() {
-	alert('not shown');
 }
 
 function hide(id) {
@@ -123,7 +112,6 @@ function createPerfilContainer(obj) {
 }
 
 function configurarModal(codigoPergunta) {
-	//alert(codigoPergunta);
     $('#customModal').modal('show');
 }
 
@@ -132,12 +120,12 @@ function fecharModal() {
 }
 
 function salvarModal() {
-	//todo salvar
+	//Todo: salvar observacao, funcionalidade excluida (mas pode voltar...)
     $('#customModal').modal('hide');
 }
 
+//Funcao responsavel por 'desmacar um radio ja clicado'
 function clickRadio() {
-	
 	$("#capaContainer").find('input:radio').each(function() {
 		//var onClick = $(this).attr('onclick');
 		//if(onClick != null && onClick != "" && onClick != "undefined") {
@@ -161,4 +149,3 @@ function clickRadio() {
 		});
 	});
 }
-

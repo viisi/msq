@@ -19,9 +19,9 @@ var FILENAME = 'msqV04a.db',
 	},
 	
 	dbEntries = "";
+	
  
 document.addEventListener("deviceready", deviceready, false);
-
 function deviceready() {
 	var fail = failCB("requestFileSystem");
 	console.log("Persistencia: deviceready, request filesystem...");
