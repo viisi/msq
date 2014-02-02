@@ -45,7 +45,8 @@ function gotFileEntry(fileEntry) {
 	fileEntry.createWriter(gotFileWriter, fail);
 	
 	console.log("Persistencia: file entry ...");
-	//readText();
+	
+	readText();
 }
  
 function gotFileWriter(fileWriter) {
@@ -87,11 +88,11 @@ function readText() {
 				var dados = evt.target.result.split("_fimRegistro");
 				
 				if(dados != null) {
-					var strHTML = ""; 
-					for(var i = 0; i < dados.length-1; i++) {
-						strHTML += "INICIO REGISTRO <br />" + dados[i] + "<br />FIM REGISTRO<br /><br />";
-					}
-					$('#savedText').html("Abrir a opção ES3E (navegador de diretorio) entrar na opção sdcard, enviar o arquivo /sdcard/msqV04a.db por e-mail para: marco.nascimento@saude.gov.br");
+					//var strHTML = ""; 
+					//for(var i = 0; i < dados.length-1; i++) {
+					//	strHTML += "INICIO REGISTRO <br />" + dados[i] + "<br />FIM REGISTRO<br /><br />";
+					//}
+					$('#savedText').html("Quantidade de entrevistas: " + dados.length);
 					//preencherQuestionario(dados[0]);
 				}
 				//preencherEstatistica();
@@ -99,18 +100,9 @@ function readText() {
 			reader.readAsText(dbFile);
 		}, failCB("FileReader"));
 		
-	    file.entry.copyTo(
-	    	new DirectoryEntry({ fullPath: "file:///sdcard/Download/"}),
-	        "msq.txt",
-	        function (newEntry) {
-	            console.log("FileEntry copy to done. New Path: " + newEntry.fullPath);
-	         },
-	         function (error) {
-	             console.log("FileEntry copy to fail. Error code: " + error.code);
-	         }
-	     )
-		
 	}
+	
+	//console.log("caminho arquivo:" + file.entry.fullPath);
 	
 	return false;
 }
@@ -155,6 +147,8 @@ function salvar() {
 		document.getElementById("formQ").reset();
 		
 		alert("Questionário salvo com sucesso!");
+		
+		$("#identificacaoContainer").focus();
 		
 	} catch (e) {
 		alert("error:" + e);

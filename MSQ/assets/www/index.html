@@ -28,7 +28,7 @@
     <body>
 	<div class="container">
 		<div class="masthead">
-	        <h3 class="muted">Assistência Farmacêutica para "RAS" - Questionário <font color="red">v0.6&alpha;</font></h3>
+	        <h3 class="muted">Assistência Farmacêutica para "RAS" - Questionário <font color="red">v1.0&alpha;</font></h3>
 	        
 	        <!-- 
 	        <div class="navbar">
@@ -49,8 +49,8 @@
 				    <ul class="nav nav-tabs" id="tabsQuestionario">
 					    <li class="active"><a href="#tabIdentificacao" data-toggle="tab" onclick="">Início</a></li>
 					    <li><a href="#tabEstatistica" data-toggle="tab" onclick="">Estatística</a></li>
+					    <li><a href="#tabContent" data-toggle="tab" onclick="readText()">Envio de dados</a></li>
 					    <li><a href="#tabAjuda" data-toggle="tab" onclick="">Ajuda</a></li>
-					    <li><a href="#tabContent" data-toggle="tab" onclick="readText()">Content</a></li>
 				    </ul>
 				    <div class="tab-content">
 					    <div class="tab-pane active" id="tabIdentificacao">
@@ -130,19 +130,48 @@
 										Departamento de Assistência Farmacêutica e Inseumos Estratégicos -DAF
 										Coordenação Geral de Assistência Farmacêutica Básica -CGAFB
 									</h3>
-									
 									<br />
-									
 									<h4>
-										ASSISTÊNCIA FARMACÊUTICCA NAS REDES DE ATENÇÃO À SAÚDE: UM RECORTE NAS REGIÕES QUALISUS-REDE.
-										MANUAL PARA O TRABALHO DE CAMPO
 									</h4>
 								</div>
 							</div>
 					    </div>
 					    <div class="tab-pane" id="tabContent">
 							<div id="divContent">
-								<div id="savedText"></div>				
+								<div id="savedText"></div>
+								
+								
+								<br />
+								<select id="apoiadorEnvio">
+									<option value="">Selecione</option>
+					                <option value="Chayene">Chayene Martins</option>
+					                <option value="Gabriel">Gabriel Gonçalves Okamoto</option>
+					                <option value="Guilherme">Guilherme Daniel Pupo</option>
+					                <option value="Joyce">Joyce Nunes dos Santos</option>
+					                <option value="Livia">Lívia de Oliveira e Silva Sampaio</option>
+					                <option value="Lucas">Lucas Mota Hauck</option>
+					                <option value="Marcelo">Marcelo Campese</option>
+					                <option value="Marcia">Márcia Regina Cardeal Gutierrez Saldanha</option>
+					                <option value="Maristela">Maristela Andrade de Souza</option>
+					                <option value="Melissa">Melissa Spröesser Alonso</option>
+					                <option value="Nivaldo">Nivaldo César de Souza Júnior</option>
+					                <option value="Patrick">Patrick Luis Cruz de Sousa</option>
+					                <option value="Suetonio">Suetonio Queiroz de Araújo</option>
+					                <option value="Suzana">Suzana Byrro</option>
+					                <option value="Sylvana">Sylvana Macêdo de Morais Menezes</option>
+					                <option value="ApoiadorRS">Apoiador RS</option>
+								</select>
+								&nbsp;&nbsp;&nbsp;
+								
+								<script type="text/javascript" src="js/upload.js"></script>
+								<input type="button" class="btn btn-primary" onclick="uploadMSQFile();" value="Enviar dados" />
+								<!-- Implementar barra de progresso 
+								<div class="progress progress-striped active">
+									<div class="progress-bar" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 80%">
+										<span class="sr-only">0%</span>
+									</div>
+								</div>
+								 -->
 							</div>
 					    </div>
 				    </div>

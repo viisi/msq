@@ -32,17 +32,21 @@ public class UploadFile extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 	    try {
 	        List<FileItem> items = new ServletFileUpload(new DiskFileItemFactory()).parseRequest(request);
+	        
+	        String apoiador = "";
+	        
 	        for (FileItem item : items) {
 	        	
-	        	log("FieldName="+item.getFieldName());
-	        	log("FileName="+item.getName());
-	        	log("ContentType="+item.getContentType());
-	        	log("Size in bytes="+item.getSize());
-	            
-	            File file = new File(UPLOAD_DIR + "UPLOAD_" + new SimpleDateFormat("dd_MM_yyyy_HHmmss").format(new Date()));
-	            file.createNewFile();
-	            
-	            copy(item.getInputStream(), file);
+	        	if(item.getFieldName().equals("apoiadorEnvio")) {
+	        		apoiador = item.getString();
+	        	}
+	        	
+	        	if(item.getFieldName().equals("file")) {
+	        		File file = new File(UPLOAD_DIR + "UPLOAD_" + apoiador + "_" + new SimpleDateFormat("dd_MM_yyyy_HHmmss").format(new Date()));
+	        		file.createNewFile();
+	        		copy(item.getInputStream(), file);
+	        	}
+	        	
 	        }
 	    } catch (FileUploadException e) {
 	        throw new ServletException(e.getMessage());
@@ -52,7 +56,7 @@ public class UploadFile extends HttpServlet {
 	private void copy(InputStream in, File file) {
 	    try {
 	        OutputStream out = new FileOutputStream(file);
-	        byte[] buf = new byte[1024];
+	        byte[] buf = new byte[2048];
 	        int len;
 	        while((len=in.read(buf))>0){
 	            out.write(buf,0,len);
