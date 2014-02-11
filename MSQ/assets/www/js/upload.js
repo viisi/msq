@@ -2,8 +2,16 @@
  * @author: marcotulio.nascimento@gmail.com
  * @since 31/01/2014
  */
+
+
+
 var fileURI = "file:///storage/sdcard/msqV04a.db";
-var serverURI = "http://192.168.0.117:8080/msq_util/UploadFile";
+
+//Local
+//var serverURI = "http://192.168.0.117:8080/msq_util/UploadFile";
+
+//Producao
+var serverURI = "http://189.28.128.18/msq_util/UploadFile";
 										
 var win = function (r) {
 	

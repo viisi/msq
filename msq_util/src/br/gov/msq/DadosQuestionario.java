@@ -59,10 +59,6 @@ public class DadosQuestionario {
 				String chave = map.get("id") != null && !map.get("id").equals("") ? map.get("id") : map.get("name");
 				String valor = map.get("value");
 				
-				if(chave == null) {
-					System.out.println("chave === ");
-				}
-				
 				if(chave != null && !chave.equals("") && valor != null && !valor.equals("")) {
 					if(mapQuestionario.get(chave) == null) {
 						List<String> lst = new ArrayList<String>();

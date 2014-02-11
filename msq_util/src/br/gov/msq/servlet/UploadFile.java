@@ -26,7 +26,12 @@ public class UploadFile extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;
 	
-	private static final String UPLOAD_DIR = "/home/tulio/AmbienteDesenvolvimento/ms/phonegap/testFileUploadDir/";
+	//local
+	//private static final String UPLOAD_DIR = "/home/tulio/AmbienteDesenvolvimento/ms/phonegap/testFileUploadDir/";
+	
+	//producao
+	private static final String UPLOAD_DIR = "/opt/msq/uploaded/";
+	
 	
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

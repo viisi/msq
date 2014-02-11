@@ -1,0 +1,52 @@
+<fieldset>
+	<legend>Identificação do entrevistador</legend>
+	<div class="control-group">
+		<label class="control-label" for="apoiador">Apoiador</label>
+		<div class="controls">
+			<select id="apoiador">
+				<option value="">Selecione</option>
+                <option value="1">Chayene Martins</option>
+                <option value="2">Gabriel Gonçalves Okamoto</option>
+                <option value="3">Guilherme Daniel Pupo</option>
+                <option value="4">Joyce Nunes dos Santos</option>
+                <option value="5">Lívia de Oliveira e Silva Sampaio</option>
+                <option value="6">Lucas Mota Hauck</option>
+                <option value="7">Marcelo Campese</option>
+                <option value="8">Márcia Regina Cardeal Gutierrez Saldanha</option>
+                <option value="9">Maristela Andrade de Souza</option>
+                <option value="10">Melissa Spröesser Alonso</option>
+                <option value="11">Nivaldo César de Souza Júnior</option>
+                <option value="12">Patrick Luis Cruz de Sousa</option>
+                <option value="13">Suetonio Queiroz de Araújo</option>
+                <option value="14">Suzana Byrro</option>
+                <option value="15">Sylvana Macêdo de Morais Menezes</option>
+                <option value="16">Apoiador RS</option>
+			</select>
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label" for="perfilResponsavel">Tipo do Questionário</label>
+		<div class="controls">
+			<select id="perfilResponsavel" onchange="createPerfilContainer(this)">
+				<option value="">Selecione</option>
+                <option value="1">Secretário de Saúde</option>
+				<option value="2">Responsável pela Assistência Farmacêutica</option>
+				<option value="3">Responsável pelo Ponto de Atenção e/ou Apoio Terapêutico</option>
+                <option value="4">Responsável pela Central de Abastecimento Farmacêutico</option>
+                <option value="5">Responsável pela Farmácia Hospitalar</option>
+			</select>
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label" for="inicioDataHora">Data e hora de início</label>
+		<div class="controls">
+			<span id="inicioDataHora"></span>
+		</div>
+	</div>
+</fieldset>
+
+<div id="capaContainer" ></div>
+
+<script type="text/javascript">
+	$('#nrCNES').mask('9999999');
+</script>
