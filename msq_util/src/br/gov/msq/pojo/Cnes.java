@@ -3,8 +3,12 @@ package br.gov.msq.pojo;
 
 public class Cnes {
 	
+	public Cnes(String codigoCnes) {
+		this.codigoCnes = codigoCnes;
+	}
+	
 	private Integer id;
-	private Long numero;
+	private String codigoCnes;
 	
 	public Integer getId() {
 		return id;
@@ -12,10 +16,10 @@ public class Cnes {
 	public void setId(Integer id) {
 		this.id = id;
 	}
-	public Long getNumero() {
-		return numero;
+	public String getCodigoCnes() {
+		return codigoCnes != null ? codigoCnes.trim() : ""; 
 	}
-	public void setNumero(Long numero) {
-		this.numero = numero;
+	public void setCodigoCnes(String codigoCnes) {
+		this.codigoCnes = codigoCnes;
 	}
 }

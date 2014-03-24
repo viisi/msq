@@ -27,10 +27,10 @@ public class UploadFile extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
 	//local
-	//private static final String UPLOAD_DIR = "/home/tulio/AmbienteDesenvolvimento/ms/phonegap/testFileUploadDir/";
+	private static final String UPLOAD_DIR = "/home/tulio/AmbienteDesenvolvimento/ms/phonegap/testFileUploadDir/";
 	
 	//producao
-	private static final String UPLOAD_DIR = "/opt/msq/uploaded/";
+	//private static final String UPLOAD_DIR = "/opt/msq/uploaded/";
 	
 	
 	@Override
@@ -61,7 +61,7 @@ public class UploadFile extends HttpServlet {
 	private void copy(InputStream in, File file) {
 	    try {
 	        OutputStream out = new FileOutputStream(file);
-	        byte[] buf = new byte[2048];
+	        byte[] buf = new byte[10*1024];
 	        int len;
 	        while((len=in.read(buf))>0){
 	            out.write(buf,0,len);

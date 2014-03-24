@@ -7,7 +7,7 @@ import java.sql.PreparedStatement;
 public class Conexao {
 	
 	private static final String DRIVER = "org.postgresql.Driver";
-	private static final String URL = "jdbc:postgresql://localhost:5432/msq";
+	private static final String URL = "jdbc:postgresql://localhost:5432/qualifar";
 	private static final String USER = "msq";
 	private static final String PASSWD = "msq";
 	
@@ -22,9 +22,9 @@ public class Conexao {
 		}
 	}
 	
-	public Connection createConnection() throws Exception {
+	protected Connection createConnection() throws Exception {
 		Class.forName(DRIVER);
-		Connection conn = DriverManager.getConnection(URL+"?user="+USER+"&password="+PASSWD);
+		Connection conn = DriverManager.getConnection(URL+"?user="+USER+"&password="+PASSWD+"&searchpath=msq");
 		return conn;
 	}
 }

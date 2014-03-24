@@ -8,6 +8,9 @@ public class DadosWrapper {
 	private String header;
 	private String chave;
 	private String valor;
+	private String tipoDOM;
+	private String codigoApoiador;
+	private String codigoQuestionario;
 	
 	public Integer getNumeroLinha() {
 		return numeroLinha;
@@ -38,5 +41,23 @@ public class DadosWrapper {
 	}
 	public void setValor(String valor) {
 		this.valor = valor;
+	}
+	public String getCodigoApoiador() {
+		return codigoApoiador;
+	}
+	public void setCodigoApoiador(String codigoApoiador) {
+		this.codigoApoiador = codigoApoiador;
+	}
+	public String getCodigoQuestionario() {
+		return codigoQuestionario;
+	}
+	public void setCodigoQuestionario(String codigoQuestionario) {
+		this.codigoQuestionario = codigoQuestionario;
+	}
+	public String getTipoDOM() {
+		return tipoDOM;
+	}
+	public void setTipoDOM(String tipoDOM) {
+		this.tipoDOM = tipoDOM;
 	}
 }

@@ -1,0 +1,1 @@
+INSERT INTO "Aplicacao"(codigo_questionario, codigo_apoiador, codigo_pergunta, codigo_cnes, valor) VALUES ('3','4','responsavel','5392136','Nelson Tertuliano da Silva Juniro - Renata Paranhos Morais');

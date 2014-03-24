@@ -4,7 +4,6 @@
  */
 
 
-
 var fileURI = "file:///storage/sdcard/msqV04a.db";
 
 //Local
@@ -21,11 +20,18 @@ var win = function (r) {
     
     if(r.responseCode == 200) {
     	alert("Dados enviados com sucesso!");
+    	
+    	document.getElementById('progressBar').value = 100;
+    	document.getElementById('labelProgressBar').innerHTML = "Status de envio: 100%";
     }
 }
 
 var fail = function (error) {
     alert("Ocorreu um erro ao transferir o arquivo, verfique a conexão de internet e tente novamente. COD - " + error.code);
+    
+    document.getElementById('progressBar').value = 0;
+	document.getElementById('labelProgressBar').innerHTML = "Status de envio: 0%";
+    
     console.log("upload error source " + error.source);
     console.log("upload error target " + error.target);
 }
@@ -40,14 +46,26 @@ function uploadMSQFile() {
 	params.apoiadorEnvio = "" + document.getElementById("apoiadorEnvio").value;
 	options.params = params;
 	
+	NProgress.start();
+	
 	var ft = new FileTransfer();
 	ft.onprogress = function(progressEvent) {
-		if (progressEvent.lengthComputable) {
-			var perc = Math.floor(progressEvent.loaded / progressEvent.total * 100);
-			//$('#progress').html("" + perc + "% enviado...");
+		
+		var percent = 0;
+		
+		if(progressEvent.lengthComputable) {
+			 percent = Math.floor(progressEvent.loaded / progressEvent.total * 100);
+			 NProgress.set(progressEvent.loaded / progressEvent.total);
 		} else {
-			//$('#progress').html("Arquivo enviado!...");
+		      ++percent
+		      NProgress.inc();
 		}
+		
+		document.getElementById('progressBar').value = percent;
+		document.getElementById('labelProgressBar').innerHTML = "Aguarde... Status de envio: " + percent + "%";
+		
 	};
 	ft.upload(fileURI, encodeURI("" + serverURI), win, fail, options);
+	
+	NProgress.done();
 }

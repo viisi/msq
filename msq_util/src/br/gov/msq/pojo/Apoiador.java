@@ -3,13 +3,18 @@ package br.gov.msq.pojo;
 
 public class Apoiador {
 	
-	public Apoiador(Integer id, String nome) {
-		this.id = id;
+	public Apoiador(String codigo) {
+		this.codigo = codigo;
+	}
+	
+	public Apoiador(String codigo, String nome) {
+		this.codigo = codigo;
 		this.nome = nome;
 	}
 	
 	private Integer id;
-	private String nome;;
+	private String codigo;
+	private String nome;
 	
 	public Integer getId() {
 		return id;
@@ -22,5 +27,11 @@ public class Apoiador {
 	}
 	public void setNome(String nome) {
 		this.nome = nome;
+	}
+	public String getCodigo() {
+		return codigo;
+	}
+	public void setCodigo(String codigo) {
+		this.codigo = codigo;
 	}
 }

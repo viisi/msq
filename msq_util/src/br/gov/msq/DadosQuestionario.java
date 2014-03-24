@@ -1,115 +1,217 @@
 package br.gov.msq;
 
 import java.io.BufferedReader;
-import java.io.FileOutputStream;
+import java.io.File;
 import java.io.FileReader;
+import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import br.gov.msq.dao.AplicacaoDAO;
+import br.gov.msq.dao.CnesDAO;
+import br.gov.msq.dao.PerguntaDAO;
+import br.gov.msq.pojo.Aplicacao;
+import br.gov.msq.pojo.Apoiador;
+import br.gov.msq.pojo.Cnes;
+import br.gov.msq.pojo.Pergunta;
+import br.gov.msq.pojo.PerguntaDOM;
+import br.gov.msq.pojo.Questionario;
 
 /**
  * @author marco.nascimento
  */
 public class DadosQuestionario {
-
-	//Arquivo gerado pelo app
-	private static final String INPUT_FILE = "/home/tulio/AmbienteDesenvolvimento/ms/phonegap/msq_banco.txt";
-
-	//saida em formato excel
-	private static final String OUTPUT_XLS = "/home/tulio/AmbienteDesenvolvimento/ms/phonegap/poi-test.xls";
 	
+	private static final String[] INPUT_FILES = {"/home/tulio/AmbienteDesenvolvimento/ms/phonegap/msq_banco.txt"};
 	
+	private PerguntaDAO perguntaDAO = new PerguntaDAO();
+	private CnesDAO cnesDAO = new CnesDAO();
+	private AplicacaoDAO aplicacaoDAO = new AplicacaoDAO();
 	
 	public static void main(String[] args) throws Exception {
+		new DadosQuestionario().incluirDados();
+	}
+	
+	public void incluirDados() throws Exception {
+		List<Aplicacao> aplicacoes = new ArrayList<Aplicacao>();
 		
-		FileOutputStream fileOut = new FileOutputStream(OUTPUT_XLS);
-		HSSFWorkbook workbook = new HSSFWorkbook();
-		HSSFSheet worksheet = workbook.createSheet("Dados - Questionario");
+		File folder = new File("/home/tulio/AmbienteDesenvolvimento/ms/phonegap/bancoDeDados/ultima_carga");
+		File[] listOfFiles = folder.listFiles();
+		 
+		for (int i = 0; i < listOfFiles.length; i++) {
+			String dados = recuperarDados(listOfFiles[i].getAbsolutePath());
+			String[] registro = dados.split("_fimRegistro");
+			aplicacoes.addAll(criarAplicacoes(criarPerguntasDOM(registro)));
+		}
 		
-		Map<String, List<String>> mapQuestionario = new HashMap<String, List<String>>();
+		incluirCnes(aplicacoes);
 		
-		String dados = recuperarDados();
-		String[] registro = dados.split("_fimRegistro");
+		incluirAplicacoes(aplicacoes);
+	}
+	
+	private void incluirCnes(List<Aplicacao> aplicacoes) throws SQLException {
+		Set<String> cnes = new HashSet<String>();
 		
-		List<DadosWrapper> wrapperList = new ArrayList<DadosWrapper>();
+		cnesDAO.incluirCnes(new Cnes("0"));
+		
+		for (Aplicacao a : aplicacoes) {
+			if(a.getCnes() != null && a.getCnes().getCodigoCnes() != null && !a.getCnes().getCodigoCnes().equals("")) {
+				cnes.add(a.getCnes().getCodigoCnes());
+			}
+		}
+		for (String numeroCnes : cnes) {
+			cnesDAO.incluirCnes(new Cnes(numeroCnes.trim()));
+		}
+	}
+	
+	private void incluirAplicacoes(List<Aplicacao> aplicacoes) throws Exception {
+		List<Aplicacao> listValidas = new ArrayList<Aplicacao>(); 
+		List<Aplicacao> listInvalidas = new ArrayList<Aplicacao>();
+		
+		for (Aplicacao a : aplicacoes) {
+			
+			if(validarAplicacao(a)) {
+				listValidas.add(a);
+			} else {
+				listInvalidas.add(a);
+			}
+			
+			if(perguntaDAO.perguntaExistente(a.getPergunta().getCodigo())) {
+				aplicacaoDAO.incluirAplicacoes(a);
+			}
+		}
+		
+		System.out.println("Qtde Validos" + listValidas.size());
+		System.out.println("Qtde Invalidos" + listInvalidas.size());
+		
+		for(Aplicacao a : listInvalidas) {
+			//System.out.println("Apoiador " + a.getApoiador().getCodigo() + " Pergunta " + a.getPergunta().getCodigo() + " Cnes " + a.getCnes().getCodigoCnes() + " valor " + a.getValor());
+		}
+	}
+	
+	private boolean validarAplicacao(Aplicacao a) throws Exception {
+		if(a.getApoiador() != null && a.getApoiador().getCodigo() != null 
+				&& a.getQuestionario() != null && a.getQuestionario().getCodigo() != null
+				&& a.getPergunta() != null && a.getPergunta().getCodigo() != null && !a.getPergunta().getCodigo().equals("")
+				&& a.getValor() != null && !a.getValor().equals("")) {
+			
+				boolean perguntaExiste = perguntaDAO.perguntaExistente(a.getPergunta().getCodigo());
+				if(!perguntaExiste) {
+					return false;
+				}
+			
+			return true;
+		}
+		return false;
+	}
+	
+	private List<PerguntaDOM> criarPerguntasDOM(String[] registro) throws Exception {
+		List<PerguntaDOM> perguntasDOM = new ArrayList<PerguntaDOM>();
 		
 		for (int i = 0; i < registro.length; i++) {
+			String[] perguntas = registro[i].split("##");
 			
-			DadosWrapper dado = new DadosWrapper();
-			dado.setNumeroLinha(++i);
+			String codigoApoiador = null;
+			String codigoQuestionario = null;
+			String numeroCNES = null;
 			
-			//System.out.println("numero linha: " + i);
-			
-			String[] pergunta = registro[i].split("##");
-			for (int j = 0; j < pergunta.length; j++) {
+			for (int k = 0; k < perguntas.length; k++) {
 				
-				String[] atributosDOM = pergunta[j].split(",");
-				
-				Map<String, String> map = new HashMap<String, String>();
-				for (String atributo : atributosDOM) {
-					if(atributo.split("=").length == 2) {
-						map.put(atributo.split("=")[0].trim(), atributo.split("=")[1]);
+				if(perguntas[k].split(",")[1].trim().equals("id=apoiador")) {
+					String[] chaveValor = perguntas[k].split(",")[3].trim().split("=");
+					if(chaveValor.length == 2 && chaveValor[0].equals("value")) {
+						codigoApoiador = chaveValor[1];
 					}
 				}
-				String chave = map.get("id") != null && !map.get("id").equals("") ? map.get("id") : map.get("name");
-				String valor = map.get("value");
-				
-				if(chave != null && !chave.equals("") && valor != null && !valor.equals("")) {
-					if(mapQuestionario.get(chave) == null) {
-						List<String> lst = new ArrayList<String>();
-						lst.add(valor);
-						mapQuestionario.put(chave, lst);
-					} else {
-						mapQuestionario.get(chave).add(valor);
+				if(perguntas[k].split(",")[1].trim().equals("id=perfilResponsavel")) {
+					String[] chaveValor = perguntas[k].split(",")[3].trim().split("=");
+					if(chaveValor.length == 2 && chaveValor[0].equals("value")) {
+						codigoQuestionario = chaveValor[1];
 					}
+				}
+				if(perguntas[k].split(",")[1].trim().equals("id=nrCNES") && perguntas[k].split(",")[3].split("=").length == 2) {
+					String[] chaveValor = perguntas[k].split(",")[3].trim().split("=");
+					if(chaveValor.length == 2 && chaveValor[0].equals("value")) {
+						numeroCNES = chaveValor[1].trim();
+					}
+				}
+			}
+			
+			for (int j = 0; j < perguntas.length; j++) {
+				
+				boolean isPerguntaCnes = perguntas[j].split(",")[1].trim().equals("id=nrCNES");
+				boolean isPerguntaApoiador = perguntas[j].split(",")[1].trim().equals("id=apoiador");
+				boolean isPerguntaQuestionario = perguntas[j].split(",")[1].trim().equals("id=perfilResponsavel");
+				
+				if(!isPerguntaCnes && !isPerguntaApoiador && !isPerguntaQuestionario) {
+					PerguntaDOM dom = new PerguntaDOM(perguntas[j].split(","));
 					
-					dado.setChave(chave);
-					dado.setValor(valor);
-					dado.setNumeroColuna(j);
-					wrapperList.add(dado);
+					dom.setCodigoApoiador(codigoApoiador);
+					dom.setCodigoQuestionario(codigoQuestionario);
+					dom.setNumeroCNES(numeroCNES);
+					
+					if(dom.getCodigoPergunta() != null && codigoQuestionario != null && codigoApoiador != null) {
+						perguntasDOM.add(dom);
+					}
 				}
 			}
 		}
 		
-		//System.out.println("size:" + mapQuestionario.keySet().size() + " -- " +mapQuestionario.keySet());
-		
-		HSSFRow header = criarLinha(worksheet, 0);
-		for (int i = 0; i < mapQuestionario.keySet().toArray().length; i++) {
-			/**
-			 * procurar fix, esta suportando apenas 256 colunas, atualmente temos 359 e outras colunas vao surgir 
-			 */
-			if(i < 256)
-				header.createCell(i).setCellValue(mapQuestionario.keySet().toArray()[i].toString());
-		}
-		
-		for (DadosWrapper dado : wrapperList) {
-			HSSFRow linha = criarLinha(worksheet, dado.getNumeroLinha());
-			linha.createCell(dado.getNumeroColuna()).setCellValue(dado.getValor());
-		}
-	    
-		workbook.write(fileOut);
-		fileOut.flush();
-		fileOut.close();
-			
+		return perguntasDOM;
 	}
 	
-	private static String recuperarDados() throws Exception {
+	private List<Aplicacao> criarAplicacoes(List<PerguntaDOM> perguntasDOM) throws Exception {
+		List<Aplicacao> aplicacoes = new ArrayList<Aplicacao>(0);
+		
+		for (PerguntaDOM perguntaDOM : perguntasDOM) {
+				
+			Apoiador apoiador = new Apoiador(perguntaDOM.getCodigoApoiador());
+			Questionario questionario = new Questionario(perguntaDOM.getCodigoQuestionario());
+			Pergunta pergunta = new Pergunta(perguntaDOM.getCodigoPergunta());
+			Cnes cnes = new Cnes(perguntaDOM.getNumeroCNES());
+			
+			String value = "";
+			if(perguntaDOM.getValue() != null && !perguntaDOM.getValue().equals("")) {
+				value = perguntaDOM.getValue().replaceAll("'", "");
+			}
+			
+			//varios valores para uma mesma pergunta
+			if(value.contains("sep_")) {
+				String[] values = value.split("sep_");
+				for (int i = 0; i < values.length; i++) {
+					Aplicacao aplicacaoMultiValue = new Aplicacao();
+					aplicacaoMultiValue.setApoiador(apoiador);
+					aplicacaoMultiValue.setQuestionario(questionario);
+					aplicacaoMultiValue.setPergunta(pergunta);
+					aplicacaoMultiValue.setCnes(cnes);
+					aplicacaoMultiValue.setValor(values[i]);
+					aplicacoes.add(aplicacaoMultiValue);
+				}
+			} else {
+				Aplicacao aplicacao = new Aplicacao();
+				aplicacao.setApoiador(apoiador);
+				aplicacao.setQuestionario(questionario);
+				aplicacao.setPergunta(pergunta);
+				aplicacao.setCnes(cnes);
+				aplicacao.setValor(value);
+				aplicacoes.add(aplicacao);
+			}
+		}
+		
+		return aplicacoes;
+	}
+	
+	private String recuperarDados(String INPUT_FILE) throws Exception {
 		BufferedReader reader = new BufferedReader(new FileReader(INPUT_FILE));
+		
+		System.out.println(INPUT_FILE);
 		
 		//arquivo com apenas 1 linha
 		String dados = reader.readLine();
 		
 		reader.close();
 		return dados;
-	}
-	
-	private static HSSFRow criarLinha(HSSFSheet worksheet, int numero) {
-		HSSFRow linha = worksheet.createRow(numero);
-		return linha;
 	}
 }
