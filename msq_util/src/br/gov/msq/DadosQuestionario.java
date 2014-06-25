@@ -37,7 +37,7 @@ public class DadosQuestionario {
 	public void incluirDados() throws Exception {
 		List<Aplicacao> aplicacoes = new ArrayList<Aplicacao>();
 		
-		File folder = new File("/home/tulio/AmbienteDesenvolvimento/ms/phonegap/bancoDeDados/ultima_carga");
+		File folder = new File("/Users/rafaeldemorais/git/msq/msq_util/msq/uploaded");
 		File[] listOfFiles = folder.listFiles();
 		 
 		for (int i = 0; i < listOfFiles.length; i++) {

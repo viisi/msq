@@ -8,7 +8,7 @@ import br.gov.msq.pojo.Cnes;
 public class CnesDAO extends Conexao {
 	
 	public void incluirCnes(Cnes cnes) throws SQLException {
-		String sqlCount = "SELECT COUNT(*) FROM \"Cnes\" WHERE NUMERO = '" + cnes.getCodigoCnes() + "';";
+		String sqlCount = "SELECT COUNT(*) FROM msq.\"Cnes\" WHERE NUMERO = '" + cnes.getCodigoCnes() + "';";
 		pS = conn.prepareStatement(sqlCount);
 		ResultSet rs = pS.executeQuery();
 		
@@ -20,7 +20,7 @@ public class CnesDAO extends Conexao {
 		if(count > 0) {
 			System.out.println("CNES existente=" + cnes.getCodigoCnes());
 		} else {
-			String sql = "INSERT INTO \"Cnes\"(numero) values ('" + cnes.getCodigoCnes() + "');";
+			String sql = "INSERT INTO msq.\"Cnes\"(numero) values ('" + cnes.getCodigoCnes() + "');";
 			//System.out.println(sql);
 			pS = conn.prepareStatement(sql);
 			pS.execute();

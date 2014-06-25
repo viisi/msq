@@ -10,7 +10,7 @@ public class AplicacaoDAO extends Conexao {
 		
 		String sql = "";
 		try {
-			sql = "INSERT INTO \"Aplicacao\"(codigo_questionario, codigo_apoiador, codigo_pergunta, codigo_cnes, valor) VALUES (" +
+			sql = "INSERT INTO msq.\"Aplicacao\"(codigo_questionario, codigo_apoiador, codigo_pergunta, codigo_cnes, valor) VALUES (" +
 					"'" + aplicacao.getQuestionario().getCodigo() + "'," +
 					"'" + aplicacao.getApoiador().getCodigo() + "'," +
 					"'" + aplicacao.getPergunta().getCodigo() + "'," +

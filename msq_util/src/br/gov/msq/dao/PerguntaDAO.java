@@ -10,7 +10,7 @@ public class PerguntaDAO extends Conexao {
 	public void incluirPerguntas(Pergunta pergunta) throws SQLException {
 		String sql = "";
 		if(!pergunta.getDescricao().equals("")) {
-			 sql = "INSERT INTO \"Pergunta\"(codigo, descricao) values ('" + pergunta.getCodigo() + "', '" + pergunta.getDescricao() + "');";
+			 sql = "INSERT INTO msq.\"Pergunta\"(codigo, descricao) values ('" + pergunta.getCodigo() + "', '" + pergunta.getDescricao() + "');";
 		} else {
 			sql = "INSERT INTO \"Pergunta\"(codigo) values ('" + pergunta.getCodigo() + "');";
 		}
@@ -20,7 +20,7 @@ public class PerguntaDAO extends Conexao {
 	}
 	
 	public boolean perguntaExistente(String codigoPergunta) throws Exception {
-		String sqlCount = "SELECT COUNT(*) FROM \"Pergunta\" WHERE codigo = '" + codigoPergunta + "';";
+		String sqlCount = "SELECT COUNT(*) FROM msq.\"Pergunta\" WHERE codigo = '" + codigoPergunta + "';";
 		pS = conn.prepareStatement(sqlCount);
 		ResultSet rs = pS.executeQuery();
 		int count = 0;
