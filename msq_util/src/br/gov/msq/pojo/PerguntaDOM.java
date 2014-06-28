@@ -16,13 +16,13 @@ public class PerguntaDOM {
 		
 		for (int i = 0; i < atributo.length; i++) {
 			if(atributo[i].split("=").length == 2) {
-				String chave = atributo[i].split("=")[0].trim();
-				String valor = atributo[i].split("=")[1];
+				String chave = atributo[i].split("=")[0].trim().intern();
+				String valor = atributo[i].split("=")[1].intern();
 				
-				if(chave.equals("id")) {
-					this.id = valor;
+				if(chave.equals("id")) { 
+					this.id = valor; 
 				}
-				if(chave.equals("﻿name")) {
+				if(chave.equals("name")) {
 					this.name = valor;
 				}
 				if(chave.equals("value")) {
